@@ -1,6 +1,7 @@
 package studentmanagement.StudentManagement.service;
 
 import java.util.List;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import studentmanagement.StudentManagement.StudentRepository;
@@ -14,7 +15,9 @@ public class StudentService {
   private StudentRepository repository;
 
   @Autowired
+  private StudentRepository studentrepository;
   public StudentService(StudentRepository repository) {
+
     this.repository = repository;
   }
 
@@ -36,5 +39,21 @@ public class StudentService {
     //抽出したリストをコントローラーにかえす。
     return repository.searchStudentCourses();
 
+  }
+
+
+
+  public int getNextStudentId(){
+    Integer maxId = repository.findMaxId();
+    if(maxId == null){
+      return 1;
+    }
+    return maxId + 1;
+  }
+
+  public void registerStudent(Student student){
+    int nextId = getNextStudentId();
+    student.setId(String.valueOf(nextId));
+    repository.insertStudent(student);
   }
 }
