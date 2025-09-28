@@ -1,6 +1,7 @@
 package studentmanagement.StudentManagement.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import studentmanagement.StudentManagement.controller.converter.StudentConverter;
@@ -48,7 +50,8 @@ public class StudentController {
   @GetMapping("/newStudent")
   public String newStudent(Model model){
     StudentDetail studentDetail = new StudentDetail();
-    studentDetail.setStudentsCourses(arrays.usList());
+    studentDetail.setStudentsCourses(new ArrayList<>());
+    studentDetail.setStudentsCourses(Arrays.asList(new Students_Courses()));
     model.addAttribute("StudentDetail", studentDetail);
     return "registerStudent";
   }
@@ -59,10 +62,10 @@ public class StudentController {
       return "registerStudent";
     }
 
-    Student student = studentDetail.getStudent();
+//    Student student = studentDetail.getStudent();
 
 
-    service.registerStudent(student);
+   service.registerStudent(studentDetail);
 
     System.out.println(studentDetail.getStudent().getName() + "さんが新規受講生として登録されました。");
     return "redirect:/studentList";
@@ -70,6 +73,13 @@ public class StudentController {
     //新規受講生情報を登録する処理を実装する。
 
     //コース情報も一緒に登録できるように実装する。コース単体で良い。
+
   }
 
+  @GetMapping("/student/{id}/courses")
+  public String getStudentCourses(@PathVariable("id") String studentId, Model model){
+    List<Students_Courses> courses = service.getCoursesByStudentId(studentId);
+    model.addAttribute("courses", courses);
+    return "studentCourses";
+  }
 }

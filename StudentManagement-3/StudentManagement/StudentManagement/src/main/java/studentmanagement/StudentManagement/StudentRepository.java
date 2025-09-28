@@ -24,35 +24,38 @@ public interface StudentRepository {
 
   @Select("SELECT * FROM students WHERE isDeleted = false")
   @Results({
-      @Result(property = "deleted",column = "isDeleted"),
-      @Result(property = "kanaName",column = "kana_name")
+      @Result(property = "deleted", column = "isDeleted"),
+      @Result(property = "kanaName", column = "kana_name")
   })
   List<Student> search();
 
-//  @Select("SELECT * FROM students_courses ")
-  @Select("SELECT sc. * FROM students_courses sc JOIN students s ON sc.student_id = s.id WHERE s.isDeleted = false")
+  @Select("SELECT * FROM students_courses ")
+    //@Select("SELECT sc. * FROM students_courses sc JOIN students s ON sc.student_id = s.id WHERE s.isDeleted = false")
 
   List<Students_Courses> searchStudentCourses();
 
-
-  @Select("SELECT MAX(CAST(id AS UNSIGNED)) FROM students")
-  Integer findMaxId();
+  // @Select("SELECT MAX(CAST(id AS UNSIGNED)) FROM students")
+  // Integer findMaxId();
 
   @Insert
       ("INSERT INTO students(id,name,kana_name,nickname,email,area,age,sex,remark,isDeleted)"
           + "VALUES(#{id},#{name},#{kanaName},#{nickname},#{email},#{area},#{age},#{sex},#{remark},#{deleted})")
+//@Insert("INSERT INTO students VALUES(#{id},#{name},#{kanaName},#{nickname},#{email},#{area},#{age},#{sex},#{remark},#{deleted})")
 
+  // @Options(useGeneratedKeys = true,keyProperty = "id")
 
- // @Options(useGeneratedKeys = true,keyProperty = "id")
+  // void insertStudent(Student student);
 
+//  @Insert()
+  @Options(useGeneratedKeys = true, keyProperty = "id")
+//  void registerStudentsCourses(Students_Courses studentsCourses);
+  void registerStudent(Student students);
 
-
-  void insertStudent(Student student);
-
-  @Insert()
-  @Options(useGeneratedKeys = true,keyProperty = "id")
+  @Insert("INSERT INTO students_courses(student_id, course_name, course_start_at, course_end_at)"
+      + "VALUES(#{studentId}, #{courseName}, #{courseStartAt}, #{courseEndAt})")
+  @Options(useGeneratedKeys = true, keyProperty = "id")
   void registerStudentsCourses(Students_Courses studentsCourses);
 
-
+  @Select("SELECT * FROM students_courses WHERE student_id = #{studentId}")
+  List<Students_Courses> findCoursesByStudentId(String studentId);
 }
-

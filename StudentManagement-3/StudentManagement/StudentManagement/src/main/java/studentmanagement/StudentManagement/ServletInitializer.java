@@ -23,8 +23,8 @@ public class ServletInitializer extends SpringBootServletInitializer {
 		this.repository = repository;
 	}
 
-	public void registerStudent(Student student){
-		repository.insertStudent(student);
-	}
+//	public void registerStudent(Student student){
+//		repository.insertStudent(student);
+//	}
 }
 
